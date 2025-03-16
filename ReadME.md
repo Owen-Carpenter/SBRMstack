@@ -45,7 +45,7 @@ Ensure you have the following installed:
 3.  **Start the frontend server:**
 
     ```bash
-    npm start
+    npm run dev
     ```
 
     This command will start the development server for the React application, enabling hot reloading and other development features.
