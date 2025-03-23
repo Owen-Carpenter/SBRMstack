@@ -20,6 +20,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import dev.carpenter.sbrmstack.security.jwt.UserEntryPointJwt;
 import dev.carpenter.sbrmstack.security.jwt.UserTokenFilter;
 import dev.carpenter.sbrmstack.security.services.UserDetailsServiceImpl;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 @Configuration
 //@EnableWebSecurity
@@ -66,6 +68,18 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public UrlBasedCorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true); // Allow cookies
+        config.addAllowedOrigin("*"); // Add the frontend origin
+        config.addAllowedHeader("*"); // Allow all headers
+        config.addAllowedMethod("*"); // Allow all HTTP methods (GET, POST, etc.)
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -78,6 +92,9 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()  // Allow all requests to /api/auth/**
                         .requestMatchers("/api/test/**").permitAll()  // Optionally allow other public endpoints
+                        .requestMatchers("/create-subscription").permitAll()
+                        .requestMatchers("/create-user").permitAll()
+                        .requestMatchers("/create-charge").permitAll()
                         .anyRequest().authenticated()  // Require authentication for any other request
                 )
                 .authenticationProvider(authenticationProvider())  // Provide custom authentication provider
